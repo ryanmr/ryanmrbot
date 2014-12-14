@@ -1,0 +1,17 @@
+{
+  "name": "ryanmrbot",
+  "version": "0.0.1",
+  "description": "a bot for ryan",
+  "main": "ryanmrbot.js",
+  "dependencies": {
+    "moment": "~2.8.4",
+    "twit": "~1.1.18"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "",
+  "license": "BSD"
+}
