@@ -18,12 +18,12 @@ var app = {
 
 	interval: null,
 
-	period: 60000
+	period: 60000,
 
 	repeat_frequency: 11, // hours
 
 	target_date: "2014-12-19 08:30:30",
-	last_time: moment().subtract(app.repeat_frequency / 3, 'hours')
+	last_time: null
 
 }
 
@@ -106,6 +106,9 @@ function init() {
 	if ( DEBUG == true ) {
 		period = 6000;
 	}
+
+	// on start up, calculate a time the past
+	app.last_time = moment().subtract(app.repeat_frequency / 3, 'hours');
 
 	perform_action();
 	app.interval = setInterval(function() {
