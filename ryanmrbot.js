@@ -23,11 +23,9 @@ var app = {
 	repeat_frequency: 11, // hours
 
 	target_date: "2014-12-19 08:30:30",
-	last_time: moment().subtract(3, 'hours')
+	last_time: moment().subtract(app.repeat_frequency / 3, 'hours')
 
 }
-
-// using moment.js to handle these nice dates
 
 Bot.prototype.tweet = function (status, callback) {
   if(typeof status !== 'string') {
@@ -60,7 +58,7 @@ function tweet_time_difference() {
 	var now = moment();
 	var then = moment(app.target_date);
 
-	// if the last occurance was less than six hours ago, skip this
+	// if the last occurance was less than repeat_frequency ago, skip this
 	var now_last_time_diff = now.diff(app.last_time, 'hours');
 	if ( now_last_time_diff < app.repeat_frequency ) {
 		console.log("tweet_time_difference: action window not open; diff = " + now_last_time_diff);
@@ -74,7 +72,9 @@ function tweet_time_difference() {
 	*/
 	var then_now_diff = then.diff(now, 'seconds');
 	if ( then_now_diff < 0 ) {
+		// any negative value will trigger this
 		console.log("tweet_time_difference: exceeded boundary; diff = " + now_then_diff);
+		// consider stopping the node script at this point, as well?
 		return;
 	}
 
@@ -100,7 +100,7 @@ function tweet_time_difference() {
 
 function init() {
 
-	console.log("ryanmr bot started");
+	console.log("ryanmrbot: started");
 
 	var period = app.period;
 	if ( DEBUG == true ) {
