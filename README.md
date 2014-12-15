@@ -4,6 +4,19 @@ ryanmrbot
 
 a simple twitter bot for @ryanmr on twitter
 
+Information
+-----------
+
+This is generic information about the bot currently:
+
+* this bot runs once a minute
+* there is a set of options, which are chosen on a randomized seed value
+* there is a primitive tweet limiter, so obnoxiousness will be reduced
+
+There is only one tentpole feature currently:
+
+* let @ryanmr know when his Nexus 6 might arrive...
+
 
 How To Run
 ----------
