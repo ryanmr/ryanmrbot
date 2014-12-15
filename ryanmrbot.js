@@ -16,12 +16,14 @@ var bot = new Bot(config);
 */
 var app = {
 
-	target_date: "2014-12-19 08:30:30",
-	last_time: moment().subtract(3, 'hours'),
-
 	interval: null,
 
 	period: 60000
+
+	repeat_frequency: 11, // hours
+
+	target_date: "2014-12-19 08:30:30",
+	last_time: moment().subtract(3, 'hours')
 
 }
 
@@ -60,7 +62,7 @@ function tweet_time_difference() {
 
 	// if the last occurance was less than six hours ago, skip this
 	var now_last_time_diff = now.diff(app.last_time, 'hours');
-	if ( now_last_time_diff < 6 ) {
+	if ( now_last_time_diff < app.repeat_frequency ) {
 		console.log("tweet_time_difference: action window not open; diff = " + now_last_time_diff);
 		return;
 	}
