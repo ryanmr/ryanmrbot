@@ -1,6 +1,7 @@
 
 var DEBUG = false;
 
+var fs = require('fs');
 var Twit = require('./node_modules/twit/lib/twitter.js');
 var moment = require('moment');
 var config = require('./config');
@@ -20,10 +21,12 @@ var app = {
 
 	period: 60000,
 
-	repeat_frequency: 11, // hours
+	repeat_frequency: 8, // hours
 
 	target_date: "2014-12-19 08:30:30",
-	last_time: null
+	last_time: null,
+
+	state_file: "bot.data"
 
 }
 
@@ -36,7 +39,52 @@ Bot.prototype.tweet = function (status, callback) {
   this.twit.post('statuses/update', { status: status }, callback);
 };
 
+function restore_state() {
+	fs.readFile(app.state_file, 'utf8', function(error, data){
+		// the file might not exist, but that is fine
+		// we will use the defaults
+		if ( error ) {
+			if ( error.errno == 34 ) {
+				console.log("restore_state: no data file present");
+				return;
+			}
+			console.error(error);
+			return;
+		}
+
+		// decode it
+		var content = JSON.parse(data);
+
+		var m = moment(content);
+
+		console.log("restore_state: state restored (last action = " + content.last_time + ", " + m.fromNow() + ")");
+		
+		app.last_time = m;
+
+	});
+}
+
+function save_state() {
+
+
+	var time = app.last_time.valueOf();
+	
+	var obj = {last_time: time};
+	var json = JSON.stringify(obj);
+
+	fs.writeFile(app.state_file, json, function(error, data){
+		if ( error ) {
+			console.log("save_state: writing state file failed")
+			console.error(error);
+		}
+		console.log("save_state: state saved (last action = " + time + ", " + app.last_time.fromNow() + ")");
+	});
+
+}
+
 function perform_action() {
+
+	console.log("");
 
 	var seed = Math.random();
 
@@ -48,6 +96,8 @@ function perform_action() {
 		console.log("perform_action: no action selected");
 	}
 
+	save_state();
+	
 
 }
 
@@ -110,7 +160,9 @@ function init() {
 	// on start up, calculate a time the past
 	app.last_time = moment().subtract(app.repeat_frequency / 3, 'hours');
 
-	perform_action();
+	restore_state();
+
+	setTimeout(perform_action, 10000);
 	app.interval = setInterval(function() {
 		console.log("attempting to perform action...");
 		perform_action();
